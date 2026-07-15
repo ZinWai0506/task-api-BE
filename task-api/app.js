@@ -1,13 +1,17 @@
 const express = require("express");
 const morgan = require("morgan")
+const cors = require("cors")
 const { db , User } = require("./models");
 const tasksRouter = require("./routes/tasks");
 const userRouter = require("./routes/user");
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 function logger(req, res, next) {
   console.log(`${req.method} ${req.url}`);
   next();
 }
+app.use(cors())
 app.use(express.json());
 app.use(morgan('combined'))
 app.use(logger)
@@ -39,11 +43,12 @@ app.use((err, req, res, next) => {
 db.sync()
   .then(() => {
     console.log("DB connected")
-    app.listen(3000, () => {
-      console.log("Server running on http://localhost:3000");
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
   })
   .catch((er)=> 
   {
     console.log(er)
+    process.exit(1)
   })
