@@ -1,38 +1,38 @@
-  const [users, setUsers] = useState([])
-  const [foods, setFoods] = useState([])
-  const BASE_API_URL = import.meta.env.VITE_API_URL || 'https://task-api-be.onrender.com/api/users'
+import { useEffect, useState } from "react";
+import "./App.css";
+
+function App() {
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState("");
+  const BASE_API_URL = import.meta.env.VITE_API_URL || "https://task-api-be.onrender.com";
 
   useEffect(() => {
-    fetch(BASE_API_URL + '/users')
-      .then(res => res.json())
-      .then(data => {
-        console.log(data)
-        setUsers(data)
+    fetch(`${BASE_API_URL}/users`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`Request failed with ${res.status}`);
+        }
+        return res.json();
       })
-    fetch(BASE_API_URL + '/foods')
-      .then(res => res.json())
-      .then(data => {
-        console.log(data)
-        setFoods(data)
+      .then((data) => {
+        setUsers(Array.isArray(data) ? data : [data]);
+        setError("");
       })
-  }, [])
+      .catch((err) => {
+        console.error(err);
+        setError("Unable to load users from the local API.");
+      });
+  }, []);
 
   return (
     <div>
       <h1>My Deployed App!</h1>
-
-      {
-        users.map((u) => (
-          <p key={u.id}>User: {u.name}</p>
-        ))
-      }
-      {
-        foods.map((f) => (
-          <p key={f.id}>Food: {f.name}</p>
-        ))
-      }
+      {error ? <p>{error}</p> : null}
+      {users.map((u) => (
+        <p key={u.id}>User: {u.name}</p>
+      ))}
     </div>
-  )
+  );
+}
 
-
-export default App
+export default App;
