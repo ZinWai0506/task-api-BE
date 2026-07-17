@@ -43,12 +43,15 @@ app.use((err, req, res, next) => {
 db.sync()
   .then(() => {
     console.log("DB connected")
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
   })
-  .catch((er)=> 
-  {
-    console.log(er)
-    process.exit(1)
+  .catch((er) => {
+    console.error(er)
   })
+
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;

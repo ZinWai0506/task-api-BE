@@ -1,4 +1,5 @@
 const { Sequelize } = require("sequelize");
+require("pg"); // Sequelize requires this dynamically, so Vercel's bundler needs a static reference to include it
 
 const DB_URL = process.env.DATABASE_URL || "postgres://localhost:5432/task-api";
 
